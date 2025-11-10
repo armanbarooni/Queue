@@ -1,0 +1,85 @@
+# -----------------------------
+# Visual Studio / .NET Git Ignore
+# -----------------------------
+
+## User-specific files
+*.rsuser
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+## Build results
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+bld/
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+
+## NuGet packages
+*.nupkg
+*.snupkg
+packages/
+*.nuspec
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+## Visual Studio cache/options folders
+
+.vscode/
+.idea/
+*.vsidx
+*.dbmdl
+*.dbproj
+*.bak
+
+## Test results
+[Tt]est[Rr]esult*/
+[Bb]uild[Ll]og.*
+*.coverage
+*.coveragexml
+
+## Others
+*.tmp
+*.swp
+*.swn
+*.swm
+*.swo
+*.bak
+*.old
+*.orig
+
+## OS generated files
+ehthumbs.db
+Thumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+## DotNet tools and publish output
+.publish/
+*.publish.xml
+*.pubxml
+*.pubxml.user
+wwwroot/
+node_modules/
+dist/
+.bundle/
+.env
+.env.*
+
+## Hangfire local DB / Logs
+hangfire.db
+hangfire-log*.txt
+
+## Rider & JetBrains
+.idea/
+*.iml
+out/
+.vs/

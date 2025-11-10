@@ -1,0 +1,47 @@
+version: "3.9"
+
+services:
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      SA_PASSWORD: "Change_Me123"
+      ACCEPT_EULA: "Y"
+    ports:
+      - "1433:1433"
+    volumes:
+      - sqlserver-data:/var/opt/mssql
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P Change_Me123 -Q \"SELECT 1\""]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  tandemqueue-api:
+    build:
+      context: .
+      dockerfile: TandemQueue.Api/Dockerfile
+    environment:
+      ASPNETCORE_ENVIRONMENT: "Development"
+      ASPNETCORE_URLS: "http://+:8080"
+      SqlServer__ConnectionString: "Server=172.17.110.12;Database=OnlinePay;User ID=sqlUser;Password=;MultipleActiveResultSets=true;"
+      Hangfire__Queues__0: "default"
+    ports:
+      - "8080:8080"
+    depends_on:
+      sqlserver:
+        condition: service_healthy
+
+  tandemqueue-worker:
+    build:
+      context: .
+      dockerfile: TandemQueue.Worker/Dockerfile
+    environment:
+      SqlServer__ConnectionString: "Server=172.17.110.12;Database=OnlinePay;User ID=sqlUser;Password=;MultipleActiveResultSets=true;"
+      Hangfire__Queues__0: "default"
+    depends_on:
+      sqlserver:
+        condition: service_healthy
+
+volumes:
+  sqlserver-data:
+

@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: tandemqueue-api
+  namespace: tandemqueue
+  labels:
+    app: tandemqueue-api
+spec:
+  selector:
+    app: tandemqueue-api
+  ports:
+    - name: http
+      port: 80
+      targetPort: 8080
+  type: ClusterIP
+

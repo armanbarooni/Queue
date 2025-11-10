@@ -1,0 +1,29 @@
+# Build artifacts
+bin/
+obj/
+
+# User-specific files
+*.user
+*.swp
+
+# Node modules (if front-end assets are added later)
+node_modules/
+
+# Docker and tooling
+Dockerfile*
+docker-compose*.yml
+
+# IDE directories
+.vs/
+.idea/
+.vscode/
+
+# Logs and temp
+logs/
+*.log
+*.tmp
+
+# Git metadata
+.git/
+.gitignore
+

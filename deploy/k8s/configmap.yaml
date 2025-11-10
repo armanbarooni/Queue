@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: tandemqueue-config
+  namespace: tandemqueue
+data:
+  Logging__Console__FormatterName: "simple"
+  Hangfire__Queues__0: "default"
+  Hangfire__WorkerCount: "5"
+
