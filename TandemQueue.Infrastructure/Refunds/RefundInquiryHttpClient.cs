@@ -1,9 +1,10 @@
+using System.Net.Http.Headers;
 using System.Net.Http.Json;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using TandemQueue.Domain.Refunds;
 using TandemQueue.Domain.Refunds.Models;
 using TandemQueue.Shared.Configuration;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 
 namespace TandemQueue.Infrastructure.Refunds;
 
@@ -32,10 +33,7 @@ internal sealed class RefundInquiryHttpClient(
         {
             using var request = new HttpRequestMessage(HttpMethod.Get, requestUrl);
 
-            if (!string.IsNullOrWhiteSpace(_options.ApiKey))
-            {
-                request.Headers.Add("X-API-KEY", _options.ApiKey);
-            }
+            AddAuthorizationHeader(request);
 
             using var response = await httpClient.SendAsync(request, cancellationToken);
             response.EnsureSuccessStatusCode();
@@ -48,6 +46,16 @@ internal sealed class RefundInquiryHttpClient(
             logger.LogError(ex, "Error calling refund inquiry API for base transaction {TransactionId}", effectiveBaseId);
             return null;
         }
+    }
+
+    private void AddAuthorizationHeader(HttpRequestMessage request)
+    {
+        if (string.IsNullOrWhiteSpace(_options.ApiKey))
+        {
+            return;
+        }
+
+        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _options.ApiKey);
     }
 }
 

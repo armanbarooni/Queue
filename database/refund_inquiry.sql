@@ -50,12 +50,12 @@ BEGIN
     MERGE OnlinePay.dbo.RefundTransactionAttribute AS target
     USING @RefundUpdates AS source
         ON target.refundTransactionId = source.RefundRowId
-       AND target.attrName = 'bodyResponse'
+       AND target.attrName = 'responsebody'
     WHEN MATCHED THEN
         UPDATE SET target.attrValue = ISNULL(source.BodyResponse, '')
     WHEN NOT MATCHED BY TARGET THEN
         INSERT (refundTransactionId, attrName, attrValue)
-        VALUES (source.RefundRowId, 'bodyResponse', ISNULL(source.BodyResponse, ''));
+        VALUES (source.RefundRowId, 'responsebody', ISNULL(source.BodyResponse, ''));
 END
 GO
 

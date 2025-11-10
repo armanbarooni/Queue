@@ -1,6 +1,6 @@
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
+using System.Globalization;
 using Microsoft.Extensions.Logging;
 using TandemQueue.Domain.Refunds;
 using TandemQueue.Domain.Refunds.Models;
@@ -28,7 +28,6 @@ public sealed class RefundInquiryService(
             var baseTransactionId = group.Key;
             var recordsForBase = group.ToList();
             var trackingLookup = BuildTrackingLookup(recordsForBase);
-            var numericLookup = BuildNumericTrackingLookup(recordsForBase);
 
             try
             {
@@ -42,7 +41,7 @@ public sealed class RefundInquiryService(
 
                 foreach (var item in response.RefundTransactionResponseList)
                 {
-                    if (!TryResolveRecord(item, trackingLookup, numericLookup, out var record))
+                    if (!TryResolveRecord(item, trackingLookup, out var record))
                     {
                         logger.LogDebug("No matching refund record found for refund response {RefundId} on base transaction {BaseTransactionId}.", item.RefundId, baseTransactionId);
                         continue;
@@ -78,60 +77,12 @@ public sealed class RefundInquiryService(
             .GroupBy(r => r.RefundTransactionId, StringComparer.OrdinalIgnoreCase)
             .ToDictionary(g => g.Key, g => g.First(), StringComparer.OrdinalIgnoreCase);
 
-    private static Dictionary<long, RefundRecord> BuildNumericTrackingLookup(IEnumerable<RefundRecord> records)
-    {
-        var result = new Dictionary<long, RefundRecord>();
-
-        foreach (var record in records)
-        {
-            if (long.TryParse(record.RefundTransactionId, NumberStyles.None, CultureInfo.InvariantCulture, out var numericValue) &&
-                !result.ContainsKey(numericValue))
-            {
-                result[numericValue] = record;
-            }
-        }
-
-        return result;
-    }
-
     private static bool TryResolveRecord(
         RefundInquiryItem item,
         IReadOnlyDictionary<string, RefundRecord> trackingLookup,
-        IReadOnlyDictionary<long, RefundRecord> numericLookup,
         out RefundRecord? record)
     {
-        if (numericLookup.TryGetValue(item.RefundId, out record))
-        {
-            return true;
-        }
-
-        if (item.Id != 0 && numericLookup.TryGetValue(item.Id, out record))
-        {
-            return true;
-        }
-
-        if (item.TransferId != 0 && numericLookup.TryGetValue(item.TransferId, out record))
-        {
-            return true;
-        }
-
-        if (TryGetByString(trackingLookup, item.RefundId, out record) ||
-            TryGetByString(trackingLookup, item.Id, out record) ||
-            TryGetByString(trackingLookup, item.TransferId, out record))
-        {
-            return true;
-        }
-
-        record = null;
-        return false;
-    }
-
-    private static bool TryGetByString(
-        IReadOnlyDictionary<string, RefundRecord> trackingLookup,
-        long value,
-        out RefundRecord? record)
-    {
-        var key = value.ToString(CultureInfo.InvariantCulture);
+        var key = item.RefundId.ToString(CultureInfo.InvariantCulture);
         return trackingLookup.TryGetValue(key, out record);
     }
 

@@ -11,6 +11,8 @@ public sealed class RefundInquiryOptions
     public string ApiKey { get; set; } = string.Empty;
 
     public long? DefaultBaseTransactionId { get; set; }
+
+    public bool AllowInvalidCertificates { get; set; }
 }
 
 

@@ -1,3 +1,4 @@
+using System.IO;
 using Hangfire;
 using HealthChecks.UI.Client;
 using TandemQueue.Application;
@@ -18,10 +19,22 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Host.UseSerilog((context, services, configuration) =>
 {
+    var contentRoot = context.HostingEnvironment.ContentRootPath;
+    var projectRoot = Path.GetFullPath(Path.Combine(contentRoot, ".."));
+    var logDirectory = Path.Combine(projectRoot, "logs");
+    Directory.CreateDirectory(logDirectory);
+    var logPath = Path.Combine(logDirectory, "app.log");
+
     configuration
         .ReadFrom.Configuration(context.Configuration)
         .ReadFrom.Services(services)
-        .Enrich.FromLogContext();
+        .Enrich.FromLogContext()
+        .Enrich.WithProperty("ContentRootPath", contentRoot)
+        .WriteTo.File(
+            logPath,
+            rollingInterval: RollingInterval.Day,
+            retainedFileCountLimit: 7,
+            outputTemplate: "[{Timestamp:yyyy-MM-dd HH:mm:ss} {Level:u3}] {SourceContext} {Message:lj}{NewLine}{Exception}");
 });
 
 builder.Services.AddProblemDetails();
