@@ -83,3 +83,4 @@ hangfire-log*.txt
 *.iml
 out/
 .vs/
+.config
