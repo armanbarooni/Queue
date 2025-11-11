@@ -1,14 +1,14 @@
-## TandemQueue Service Scaffold
+## PayQueue Service Scaffold
 
-This solution bootstraps a production-ready TandemQueue environment on .NET 9, designed for horizontal scalability and container-first deployment.
+This solution bootstraps a production-ready PayQueue environment on .NET 9, designed for horizontal scalability and container-first deployment.
 
 ### Projects
-- `TandemQueue.Domain` — Contracts, DTOs and service interfaces that define core behaviours without infrastructure details.
-- `TandemQueue.Application` — Use-cases and job implementations built on domain abstractions (FluentValidation, orchestrators).
-- `TandemQueue.Infrastructure` — Modular providers (`AddHangfireInfrastructure`, `AddMonitoringInfrastructure`, `AddRefundInfrastructure`) implementing domain contracts with Hangfire storage, health checks، و استعلام رفاند.
-- `TandemQueue.Api` — Minimal API exposing job endpoints، Hangfire dashboard، health و metrics؛ وابسته به abstractionها.
-- `TandemQueue.Worker` — Dedicated worker hosting the Hangfire server و recurring job registration + refund orchestrations.
-- `TandemQueue.Shared` — Cross-cutting configuration models.
+- `PayQueue.Domain` — Contracts, DTOs and service interfaces that define core behaviours without infrastructure details.
+- `PayQueue.Application` — Use-cases and job implementations built on domain abstractions (FluentValidation, orchestrators).
+- `PayQueue.Infrastructure` — Modular providers (`AddHangfireInfrastructure`, `AddMonitoringInfrastructure`, `AddRefundInfrastructure`) implementing domain contracts with Hangfire storage, health checks، و استعلام رفاند.
+- `PayQueue.Api` — Minimal API exposing job endpoints، Hangfire dashboard، health و metrics؛ وابسته به abstractionها.
+- `PayQueue.Worker` — Dedicated worker hosting the Hangfire server و recurring job registration + refund orchestrations.
+- `PayQueue.Shared` — Cross-cutting configuration models.
 
 ### Key Features
 - Clean dependency flow (Domain → Application → Infrastructure → Hosts) with Hangfire server isolated to the worker process.
@@ -33,10 +33,10 @@ dotnet restore
 dotnet build
 
 # Run API (with Hangfire dashboard and sample endpoints)
-dotnet run --project TandemQueue.Api
+dotnet run --project PayQueue.Api
 
 # Run Worker (dedicated Hangfire server)
-dotnet run --project TandemQueue.Worker
+dotnet run --project PayQueue.Worker
 ```
 
 Visit:
@@ -85,7 +85,7 @@ Environment overrides leverage ASP.NET Core's configuration binding. Example: `S
 | `RefundInquiry:Endpoint` | ESB refund inquiry base URL | `https://esb.asiatech.ir/api/v1/bp/refund/inquiry/all` |
 
 ### Next Steps
-- Add domain-specific jobs to `TandemQueue.Application` and register validators.
+- Add domain-specific jobs to `PayQueue.Application` and register validators.
 - Integrate persistent secrets manager (Azure Key Vault, AWS Secrets Manager, etc.).
 - Extend observability (OpenTelemetry exporters to OTLP, distributed tracing backend).
 
